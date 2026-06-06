@@ -25,6 +25,7 @@ COPY . .
 
 # PHP ডিপেন্ডেন্সি ইন্সটল (PHP 8.4 এখন সাপোর্ট করে)
 RUN composer install --no-interaction --optimize-autoloader --no-dev
+RUN php artisan migrate --force
 
 # Node.js & npm ইন্সটল (Vue অ্যাসেট বিল্ডের জন্য)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
