@@ -1,6 +1,6 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
-# সিস্টেম ডিপেন্ডেন্সি (এখন libpq-dev যোগ করা হয়েছে)
+# সিস্টেম ডিপেন্ডেন্সি (libpq-dev PostgreSQL এর জন্য)
 RUN apt-get update && apt-get install -y \
     nginx \
     git \
@@ -23,7 +23,7 @@ WORKDIR /var/www
 # পুরো প্রোজেক্ট কপি
 COPY . .
 
-# PHP ডিপেন্ডেন্সি ইন্সটল
+# PHP ডিপেন্ডেন্সি ইন্সটল (PHP 8.4 এখন সাপোর্ট করে)
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
 # Node.js & npm ইন্সটল (Vue অ্যাসেট বিল্ডের জন্য)
@@ -36,11 +36,11 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 RUN chown -R www-data:www-data storage bootstrap/cache
 RUN chmod -R 775 storage bootstrap/cache
 
-# এনজিনক্স কনফিগ (প্রয়োজনীয় ডিরেক্টরি তৈরি)
+# এনজিনক্স কনফিগ
 RUN mkdir -p /etc/nginx/conf.d
 COPY .docker/nginx.conf /etc/nginx/nginx.conf
 
-# সুপারভাইজর কনফিগ (এনজিনক্স + পিএইচপি-এফপিএম একসাথে চালাবে)
+# সুপারভাইজর কনফিগ
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 80
