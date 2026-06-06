@@ -23,9 +23,8 @@ WORKDIR /var/www
 # পুরো প্রোজেক্ট কপি
 COPY . .
 
-# PHP ডিপেন্ডেন্সি ইন্সটল (PHP 8.4 এখন সাপোর্ট করে)
+# PHP ডিপেন্ডেন্সি ইন্সটল
 RUN composer install --no-interaction --optimize-autoloader --no-dev
-RUN php artisan migrate --force
 
 # Node.js & npm ইন্সটল (Vue অ্যাসেট বিল্ডের জন্য)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
@@ -44,5 +43,9 @@ COPY .docker/nginx.conf /etc/nginx/nginx.conf
 # সুপারভাইজর কনফিগ
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# কপি স্টার্ট স্ক্রিপ্ট
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 EXPOSE 80
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/local/bin/start.sh"]
