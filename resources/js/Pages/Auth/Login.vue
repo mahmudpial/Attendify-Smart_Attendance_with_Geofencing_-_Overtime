@@ -149,6 +149,7 @@ const submit = () => {
     letter-spacing: 0.05em;
 }
 
+/* Base input style – forces light text */
 .form-input {
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
@@ -156,12 +157,12 @@ const submit = () => {
     border-radius: 8px;
     padding: 12px 14px;
     font-size: 14px;
+    color: var(--text) !important;
+    /* Force light text */
     transition: all 0.2s;
-    /* Explicit text colour */
-    color: var(--text);
 }
 
-/* Override autofill styles */
+/* Override autofill styles – kills the yellow background and forces light text */
 .form-input:-webkit-autofill,
 .form-input:-webkit-autofill:focus {
     -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5) inset !important;
@@ -170,7 +171,7 @@ const submit = () => {
     border-color: var(--border);
 }
 
-/* Placeholder contrast */
+/* Placeholder contrast – make it visible */
 .form-input::placeholder {
     color: var(--text-muted);
     opacity: 0.7;
