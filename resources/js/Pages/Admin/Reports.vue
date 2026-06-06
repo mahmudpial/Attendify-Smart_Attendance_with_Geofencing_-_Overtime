@@ -124,9 +124,10 @@
                             <tr v-for="(emp, userId) in report" :key="userId">
                                 <td data-label="Employee">{{ emp.user_name }}</td>
                                 <td data-label="Days" class="text-center">{{ emp.total_days }}</td>
-                                <td data-label="Normal" class="text-center">{{ emp.total_normal.toFixed(2) }}</td>
-                                <td data-label="Overtime" class="text-center">{{ emp.total_overtime.toFixed(2) }}</td>
-                                <td data-label="Total" class="text-center">{{ emp.total_hours.toFixed(2) }}</td>
+                                <td data-label="Normal" class="text-center">{{ formatNumber(emp.total_normal) }}</td>
+                                <td data-label="Overtime" class="text-center">{{ formatNumber(emp.total_overtime) }}
+                                </td>
+                                <td data-label="Total" class="text-center">{{ formatNumber(emp.total_hours) }}</td>
                                 <td data-label="Details" class="text-center">
                                     <button @click="toggleDetails(userId)" class="details-btn">
                                         {{ expandedRows[userId] ? 'Hide' : 'Show' }}
@@ -164,14 +165,13 @@
                                         <td data-label="Date">{{ formatDate(record.date) }}</td>
                                         <td data-label="Punch In">{{ formatTime(record.punch_in) }}</td>
                                         <td data-label="Punch Out">{{ formatTime(record.punch_out) }}</td>
-                                        <td data-label="Normal" class="text-center">{{ (record.normal_hours ||
-                                            0).toFixed(2) }}
-                                        </td>
-                                        <td data-label="OT" class="text-center">{{ (record.overtime_hours ||
-                                            0).toFixed(2) }}
-                                        </td>
-                                        <td data-label="Total" class="text-center">{{ ((record.normal_hours || 0) +
-                                            (record.overtime_hours || 0)).toFixed(2) }}</td>
+                                        <td data-label="Normal" class="text-center">{{ formatNumber(record.normal_hours)
+                                        }}</td>
+                                        <td data-label="OT" class="text-center">{{ formatNumber(record.overtime_hours)
+                                        }}</td>
+                                        <td data-label="Total" class="text-center">{{ formatNumber((record.normal_hours
+                                            || 0) +
+                                            (record.overtime_hours || 0)) }}</td>
                                         <td data-label="Status">
                                             <span :class="['status-badge', statusClass(record.status)]">
                                                 {{ record.status }}
@@ -235,6 +235,13 @@ const totalOvertime = computed(() => {
     }
     return total.toFixed(1);
 });
+
+// Safe number formatter
+const formatNumber = (value) => {
+    if (value === undefined || value === null) return '0.00';
+    const num = parseFloat(value);
+    return isNaN(num) ? '0.00' : num.toFixed(2);
+};
 
 function formatDate(date) {
     if (!date) return '-';

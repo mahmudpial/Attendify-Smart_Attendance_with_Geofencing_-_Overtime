@@ -201,6 +201,7 @@ const closeModal = () => {
     --text-muted: #8b97b8;
     --text-disabled: #545e7a;
     --primary: #4f8ef7;
+    --primary-dim: rgba(79, 142, 247, 0.15);
     --success: #34d399;
     --danger: #f87171;
     --warning: #fbbf24;
@@ -235,7 +236,7 @@ const closeModal = () => {
     width: 48px;
     height: 48px;
     border-radius: 14px;
-    background: rgba(79, 142, 247, 0.12);
+    background: var(--primary-dim);
     border: 1px solid rgba(79, 142, 247, 0.25);
     display: flex;
     align-items: center;
@@ -266,7 +267,7 @@ const closeModal = () => {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--r);
-    padding: 24px;
+    overflow: hidden;
     transition: border-color 0.2s;
 }
 
@@ -278,7 +279,8 @@ const closeModal = () => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
 }
 
 .card-label {
@@ -313,86 +315,91 @@ const closeModal = () => {
 /* ===== DATA TABLE ===== */
 .data-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     font-size: 14px;
 }
 
 .data-table th {
     text-align: left;
-    padding: 12px 16px;
-    background: rgba(0, 0, 0, 0.2);
+    padding: 14px 20px;
+    background: rgba(0, 0, 0, 0.35);
     color: var(--text-muted);
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     font-size: 11px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     border-bottom: 1px solid var(--border);
 }
 
 .data-table td {
-    padding: 14px 16px;
+    padding: 16px 20px;
     color: var(--text);
     border-bottom: 1px solid var(--border);
     vertical-align: middle;
 }
 
-.data-table tr:hover td {
-    background: var(--surface-hover);
+.data-table tr:last-child td {
+    border-bottom: none;
 }
 
-.actions-cell {
-    display: flex;
-    gap: 12px;
-    white-space: nowrap;
+.data-table tr:hover td {
+    background: rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
 }
 
 /* Role badges */
 .role-badge {
     display: inline-block;
-    padding: 4px 12px;
-    border-radius: 999px;
+    padding: 5px 14px;
+    border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    backdrop-filter: blur(4px);
 }
 
 .role-admin {
-    background: rgba(248, 113, 113, 0.12);
+    background: rgba(248, 113, 113, 0.15);
     color: var(--danger);
     border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 .role-employee {
-    background: rgba(52, 211, 153, 0.12);
+    background: rgba(52, 211, 153, 0.15);
     color: var(--success);
     border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
-/* Action buttons */
+/* Action buttons – glass style */
 .action-btn {
-    background: none;
+    background: rgba(255, 255, 255, 0.05);
     border: none;
-    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: color 0.2s;
-}
-
-.action-btn--edit {
-    color: var(--primary);
+    transition: all 0.2s;
+    color: var(--text-muted);
 }
 
 .action-btn--edit:hover {
-    color: #3b7ae6;
-}
-
-.action-btn--delete {
-    color: var(--danger);
+    background: var(--primary);
+    color: #0a0f1e;
+    transform: translateY(-1px);
 }
 
 .action-btn--delete:hover {
-    color: #ef4444;
+    background: var(--danger);
+    color: #0a0f1e;
+    transform: translateY(-1px);
+}
+
+.actions-cell {
+    display: flex;
+    gap: 8px;
 }
 
 .empty-state {
@@ -516,8 +523,11 @@ const closeModal = () => {
         gap: 16px;
     }
 
-    .card {
-        padding: 18px;
+    .card-header {
+        padding: 16px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
     }
 
     .page-header-icon {
@@ -542,7 +552,7 @@ const closeModal = () => {
         display: block;
         margin-bottom: 16px;
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 12px;
         background: var(--surface);
     }
 
@@ -570,11 +580,13 @@ const closeModal = () => {
 
     .actions-cell {
         justify-content: flex-end;
+        width: 100%;
     }
 
     .modal-container {
         width: 95%;
         margin: 16px;
+        padding: 20px;
     }
 }
 </style>
