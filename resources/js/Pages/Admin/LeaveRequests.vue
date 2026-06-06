@@ -101,13 +101,25 @@ const props = defineProps({
     statusFilter: String,
 });
 
+// Safe route builder (bypass Ziggy)
+const safeRoute = (name, id = null) => {
+    if (name === 'admin.leave.requests.update' && id) {
+        return `/admin/leave-requests/${id}`;
+    }
+    if (name === 'admin.leave.requests') {
+        return '/admin/leave-requests';
+    }
+    // fallback to hardcoded pattern
+    return `/${name.replace(/\./g, '-')}`;
+};
+
 const showModal = ref(false);
 const selectedRequest = ref(null);
 const modalAction = ref('');
 const adminComment = ref('');
 
 const filterStatus = (status) => {
-    router.get(route('admin.leave.requests'), { status }, { preserveState: true });
+    router.get(safeRoute('admin.leave.requests'), { status }, { preserveState: true });
 };
 
 const openModal = (request, action) => {
@@ -125,7 +137,8 @@ const closeModal = () => {
 
 const submitAction = () => {
     const status = modalAction.value;
-    router.put(route('admin.leave.requests.update', selectedRequest.value.id), {
+    const url = safeRoute('admin.leave.requests.update', selectedRequest.value.id);
+    router.put(url, {
         status: status,
         admin_comment: adminComment.value,
     }, {
@@ -142,3 +155,5 @@ const statusClass = (status) => {
     }[status];
 };
 </script>
+
+<!-- rest of template unchanged -->

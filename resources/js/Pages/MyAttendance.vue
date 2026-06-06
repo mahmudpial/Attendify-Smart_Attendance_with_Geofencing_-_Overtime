@@ -43,11 +43,9 @@
                                             <span v-else class="text-gray-400">—</span>
                                         </td>
                                         <td class="border px-4 py-2">{{ att.punch_out_ip || '—' }}</td>
-                                        <td class="border px-4 py-2 text-center">
-                                            {{ (att.normal_hours || 0).toFixed(2) }}
+                                        <td class="border px-4 py-2 text-center">{{ formatNumber(att.normal_hours) }}
                                         </td>
-                                        <td class="border px-4 py-2 text-center">
-                                            {{ (att.overtime_hours || 0).toFixed(2) }}
+                                        <td class="border px-4 py-2 text-center">{{ formatNumber(att.overtime_hours) }}
                                         </td>
                                         <td class="border px-4 py-2">
                                             <span :class="statusClass(att.status)"
@@ -57,8 +55,8 @@
                                         </td>
                                     </tr>
                                     <tr v-if="attendances.data?.length === 0">
-                                        <td colspan="10" class="text-center py-4 text-gray-500">
-                                            No attendance records found.
+                                        <td colspan="10" class="text-center py-4 text-gray-500">No attendance records
+                                            found.
                                         </td>
                                     </tr>
                                 </tbody>
@@ -88,6 +86,13 @@ const formatDate = (date) => {
 const formatTime = (timestamp) => {
     if (!timestamp) return '—';
     return new Date(timestamp).toLocaleTimeString();
+};
+
+// Safe number formatter (handles strings, null, undefined)
+const formatNumber = (value) => {
+    if (value === undefined || value === null) return '0.00';
+    const num = parseFloat(value);
+    return isNaN(num) ? '0.00' : num.toFixed(2);
 };
 
 const statusClass = (status) => {

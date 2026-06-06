@@ -42,36 +42,30 @@
                                     Date(todayAttendance.punch_in).toLocaleTimeString() : 'Not punched in' }}</p>
                                 <p><strong>Punch Out:</strong> {{ todayAttendance?.punch_out ? new
                                     Date(todayAttendance.punch_out).toLocaleTimeString() : 'Not punched out' }}</p>
-
-                                <!-- ✅ Always show normal & overtime hours (default to 0.00) -->
                                 <p><strong>🕐 Normal Hours:</strong> {{ normalHours }}</p>
                                 <p><strong>⏱️ Overtime Hours:</strong> {{ overtimeHours }}</p>
-
-                                <p v-if="todayAttendance?.punch_in_lat">
-                                    <strong>📍 In Location:</strong> {{ todayAttendance.punch_in_lat.toFixed(6) }}, {{
+                                <p v-if="todayAttendance?.punch_in_lat"><strong>📍 In Location:</strong> {{
+                                    todayAttendance.punch_in_lat.toFixed(6) }}, {{
                                         todayAttendance.punch_in_lng.toFixed(6) }}
                                 </p>
-                                <p v-if="todayAttendance?.punch_in_ip">
-                                    <strong>🌐 In IP:</strong> {{ todayAttendance.punch_in_ip }}
-                                </p>
-                                <p v-if="todayAttendance?.punch_out_lat">
-                                    <strong>📍 Out Location:</strong> {{ todayAttendance.punch_out_lat.toFixed(6) }}, {{
+                                <p v-if="todayAttendance?.punch_in_ip"><strong>🌐 In IP:</strong> {{
+                                    todayAttendance.punch_in_ip
+                                }}</p>
+                                <p v-if="todayAttendance?.punch_out_lat"><strong>📍 Out Location:</strong> {{
+                                    todayAttendance.punch_out_lat.toFixed(6) }}, {{
                                         todayAttendance.punch_out_lng.toFixed(6) }}
                                 </p>
-                                <p v-if="todayAttendance?.punch_out_ip">
-                                    <strong>🌐 Out IP:</strong> {{ todayAttendance.punch_out_ip }}
-                                </p>
+                                <p v-if="todayAttendance?.punch_out_ip"><strong>🌐 Out IP:</strong> {{
+                                    todayAttendance.punch_out_ip }}</p>
                             </div>
                         </div>
 
                         <!-- Link to history & leave requests -->
                         <div class="flex gap-4">
-                            <Link :href="route('my.attendance')" class="text-blue-600 hover:underline">
-                                View My Attendance History
+                            <Link :href="attendanceHistoryUrl" class="text-blue-600 hover:underline">View My Attendance
+                                History
                             </Link>
-                            <Link :href="route('leave.requests')" class="text-purple-600 hover:underline">
-                                Manage Leave
-                            </Link>
+                            <Link :href="leaveRequestsUrl" class="text-purple-600 hover:underline">Manage Leave</Link>
                         </div>
                     </div>
                 </div>
@@ -91,7 +85,26 @@ const props = defineProps({
 
 const page = usePage();
 
-// Flash message from Laravel session (via HandleInertiaRequests)
+// ---------- SAFE ROUTE (ignores Ziggy, uses hardcoded URLs) ----------
+const routeUrls = {
+    'my.attendance': '/my-attendance',
+    'leave.requests': '/leave-requests',
+    'dashboard': '/dashboard',
+    'punch.in': '/punch-in',
+    'punch.out': '/punch-out',
+    'profile.edit': '/profile',
+    'logout': '/logout',
+};
+
+const safeRoute = (name, params = {}) => {
+    // Return hardcoded URL if defined
+    if (routeUrls[name]) return routeUrls[name];
+    // Fallback: replace dots with hyphens
+    return `/${name.replace(/\./g, '-')}`;
+};
+// ----------------------------------------------------------------
+
+// Flash messages
 const flashMessage = computed(() => {
     const flash = page.props.flash;
     if (flash?.success) return flash.success;
@@ -108,20 +121,28 @@ const flashType = computed(() => {
 const punchedIn = computed(() => props.todayAttendance?.punch_in && !props.todayAttendance?.punch_out);
 const punchedOut = computed(() => !!props.todayAttendance?.punch_out);
 
-// ✅ Computed values for normal & overtime – always show 0.00 if missing or null
+// Safe numeric hours
 const normalHours = computed(() => {
-    const val = props.todayAttendance?.normal_hours;
-    return (val !== undefined && val !== null) ? val.toFixed(2) : '0.00';
+    let val = props.todayAttendance?.normal_hours;
+    if (val === undefined || val === null) return '0.00';
+    const num = parseFloat(val);
+    return isNaN(num) ? '0.00' : num.toFixed(2);
 });
 const overtimeHours = computed(() => {
-    const val = props.todayAttendance?.overtime_hours;
-    return (val !== undefined && val !== null) ? val.toFixed(2) : '0.00';
+    let val = props.todayAttendance?.overtime_hours;
+    if (val === undefined || val === null) return '0.00';
+    const num = parseFloat(val);
+    return isNaN(num) ? '0.00' : num.toFixed(2);
 });
+
+// Pre‑computed URLs
+const attendanceHistoryUrl = safeRoute('my.attendance');
+const leaveRequestsUrl = safeRoute('leave.requests');
 
 const isLoading = ref(false);
 const locationError = ref(null);
 
-// Get GPS position with user-friendly error handling
+// Geolocation
 const getCurrentPosition = () => {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
@@ -136,65 +157,49 @@ const getCurrentPosition = () => {
     });
 };
 
-// Punch In
 const punchIn = async () => {
     if (isLoading.value) return;
     isLoading.value = true;
     locationError.value = null;
-
     let lat = null, lng = null;
     try {
         const position = await getCurrentPosition();
         lat = position.coords.latitude;
         lng = position.coords.longitude;
     } catch (err) {
-        if (err.code === 1) {
-            locationError.value = 'Location permission denied. Please enable location services to punch in from office premises.';
-        } else if (err.code === 2) {
-            locationError.value = 'Location unavailable. Please check your GPS signal.';
-        } else if (err.code === 3) {
-            locationError.value = 'Location request timed out. Please try again.';
-        } else {
-            locationError.value = err.message;
-        }
+        if (err.code === 1) locationError.value = 'Location permission denied. Please enable location services.';
+        else if (err.code === 2) locationError.value = 'Location unavailable. Please check your GPS signal.';
+        else if (err.code === 3) locationError.value = 'Location request timed out. Please try again.';
+        else locationError.value = err.message;
     }
-
-    router.post(route('punch.in'), { latitude: lat, longitude: lng }, {
+    const url = safeRoute('punch.in');
+    console.log('Punch In URL:', url); // for debugging – remove later
+    router.post(url, { latitude: lat, longitude: lng }, {
         preserveScroll: true,
-        onFinish: () => {
-            isLoading.value = false;
-        },
+        onFinish: () => { isLoading.value = false; },
     });
 };
 
-// Punch Out
 const punchOut = async () => {
     if (isLoading.value) return;
     isLoading.value = true;
     locationError.value = null;
-
     let lat = null, lng = null;
     try {
         const position = await getCurrentPosition();
         lat = position.coords.latitude;
         lng = position.coords.longitude;
     } catch (err) {
-        if (err.code === 1) {
-            locationError.value = 'Location permission denied. Please enable location services.';
-        } else if (err.code === 2) {
-            locationError.value = 'Location unavailable. Please check your GPS signal.';
-        } else if (err.code === 3) {
-            locationError.value = 'Location request timed out. Please try again.';
-        } else {
-            locationError.value = err.message;
-        }
+        if (err.code === 1) locationError.value = 'Location permission denied.';
+        else if (err.code === 2) locationError.value = 'Location unavailable.';
+        else if (err.code === 3) locationError.value = 'Location request timed out.';
+        else locationError.value = err.message;
     }
-
-    router.post(route('punch.out'), { latitude: lat, longitude: lng }, {
+    const url = safeRoute('punch.out');
+    console.log('Punch Out URL:', url); // for debugging – remove later
+    router.post(url, { latitude: lat, longitude: lng }, {
         preserveScroll: true,
-        onFinish: () => {
-            isLoading.value = false;
-        },
+        onFinish: () => { isLoading.value = false; },
     });
 };
 </script>

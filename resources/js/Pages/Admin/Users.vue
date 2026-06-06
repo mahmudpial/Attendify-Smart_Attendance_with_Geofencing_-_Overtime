@@ -9,7 +9,7 @@
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6">
                         <!-- Add User Button -->
-                        <button @click="showCreateModal = true"
+                        <button @click="openCreateModal"
                             class="bg-green-600 text-white px-4 py-2 rounded mb-4 hover:bg-green-700">
                             + Add New User
                         </button>
@@ -98,6 +98,20 @@ const props = defineProps({
     users: Array,
 });
 
+// Safe route helper (bypass Ziggy)
+const safeRoute = (name, id = null) => {
+    const routes = {
+        'admin.users.index': '/admin/users',
+        'admin.users.store': '/admin/users',
+        'admin.users.update': (id) => `/admin/users/${id}`,
+        'admin.users.destroy': (id) => `/admin/users/${id}`,
+    };
+    if (name === 'admin.users.update' || name === 'admin.users.destroy') {
+        return routes[name](id);
+    }
+    return routes[name] || `/${name.replace(/\./g, '-')}`;
+};
+
 const showCreateModal = ref(false);
 const showEditModal = ref(false);
 const form = ref({
@@ -109,10 +123,16 @@ const form = ref({
 });
 
 const isEdit = ref(false);
-
 const formTitle = ref('');
 
-function editUser(user) {
+const openCreateModal = () => {
+    isEdit.value = false;
+    formTitle.value = 'Add New User';
+    form.value = { id: null, name: '', email: '', password: '', role: 'employee' };
+    showCreateModal.value = true;
+};
+
+const editUser = (user) => {
     isEdit.value = true;
     formTitle.value = 'Edit User';
     form.value = {
@@ -123,41 +143,34 @@ function editUser(user) {
         role: user.role,
     };
     showEditModal.value = true;
-}
+};
 
-function deleteUser(user) {
+const deleteUser = (user) => {
     if (confirm(`Are you sure you want to delete ${user.name}?`)) {
-        router.delete(route('admin.users.destroy', user.id), {
+        router.delete(safeRoute('admin.users.destroy', user.id), {
             preserveScroll: true,
         });
     }
-}
+};
 
-function submitForm() {
+const submitForm = () => {
     if (isEdit.value) {
-        router.put(route('admin.users.update', form.value.id), form.value, {
+        router.put(safeRoute('admin.users.update', form.value.id), form.value, {
             preserveScroll: true,
             onSuccess: () => closeModal(),
         });
     } else {
-        router.post(route('admin.users.store'), form.value, {
+        router.post(safeRoute('admin.users.store'), form.value, {
             preserveScroll: true,
             onSuccess: () => closeModal(),
         });
     }
-}
+};
 
-function closeModal() {
+const closeModal = () => {
     showCreateModal.value = false;
-    showEditModal.value = false;
     showEditModal.value = false;
     isEdit.value = false;
     form.value = { id: null, name: '', email: '', password: '', role: 'employee' };
-}
-
-function openCreateModal() {
-    isEdit.value = false;
-    formTitle.value = 'Add New User';
-    showCreateModal.value = true;
-}
+};
 </script>

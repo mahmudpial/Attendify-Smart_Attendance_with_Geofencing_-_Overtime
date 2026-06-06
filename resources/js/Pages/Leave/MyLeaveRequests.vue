@@ -13,15 +13,15 @@
                         <div class="grid grid-cols-3 gap-4">
                             <div class="bg-blue-100 p-4 rounded">
                                 <p class="font-semibold">Annual</p>
-                                <p class="text-2xl">{{ balances.annual }} days</p>
+                                <p class="text-2xl">{{ balances.annual || 0 }} days</p>
                             </div>
                             <div class="bg-green-100 p-4 rounded">
                                 <p class="font-semibold">Sick</p>
-                                <p class="text-2xl">{{ balances.sick }} days</p>
+                                <p class="text-2xl">{{ balances.sick || 0 }} days</p>
                             </div>
                             <div class="bg-yellow-100 p-4 rounded">
                                 <p class="font-semibold">Casual</p>
-                                <p class="text-2xl">{{ balances.casual }} days</p>
+                                <p class="text-2xl">{{ balances.casual || 0 }} days</p>
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                                 <tr v-for="req in leaveRequests.data" :key="req.id">
                                     <td class="border px-4 py-2">{{ req.type }}</td>
                                     <td class="border px-4 py-2">{{ req.start_date }} → {{ req.end_date }}</td>
-                                    <td class="border px-4 py-2 text-center">{{ req.days_count }}</td>
+                                    <td class="border px-4 py-2 text-center">{{ req.days_count || 0 }}</td>
                                     <td class="border px-4 py-2">{{ req.reason }}</td>
                                     <td class="border px-4 py-2">
                                         <span :class="statusClass(req.status)"
@@ -125,7 +125,10 @@ const form = ref({
 });
 
 const submitLeave = () => {
-    router.post(route('leave.requests.store'), form.value, {
+    // Hardcoded URL – no route helper
+    const url = '/leave-requests';
+    console.log('Submitting leave to:', url);
+    router.post(url, form.value, {
         preserveScroll: true,
         onSuccess: () => {
             form.value = { type: 'annual', start_date: '', end_date: '', reason: '' };
