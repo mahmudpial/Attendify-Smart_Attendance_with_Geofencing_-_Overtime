@@ -44,16 +44,16 @@
                                     Date(todayAttendance.punch_out).toLocaleTimeString() : 'Not punched out' }}</p>
                                 <p><strong>🕐 Normal Hours:</strong> {{ normalHours }}</p>
                                 <p><strong>⏱️ Overtime Hours:</strong> {{ overtimeHours }}</p>
-                                <p v-if="todayAttendance?.punch_in_lat"><strong>📍 In Location:</strong> {{
-                                    todayAttendance.punch_in_lat.toFixed(6) }}, {{
-                                        todayAttendance.punch_in_lng.toFixed(6) }}
+                                <p v-if="todayAttendance?.punch_in_lat">
+                                    <strong>📍 In Location:</strong> {{ formatCoordinate(todayAttendance.punch_in_lat,
+                                        todayAttendance.punch_in_lng) }}
                                 </p>
                                 <p v-if="todayAttendance?.punch_in_ip"><strong>🌐 In IP:</strong> {{
                                     todayAttendance.punch_in_ip
                                 }}</p>
-                                <p v-if="todayAttendance?.punch_out_lat"><strong>📍 Out Location:</strong> {{
-                                    todayAttendance.punch_out_lat.toFixed(6) }}, {{
-                                        todayAttendance.punch_out_lng.toFixed(6) }}
+                                <p v-if="todayAttendance?.punch_out_lat">
+                                    <strong>📍 Out Location:</strong> {{ formatCoordinate(todayAttendance.punch_out_lat,
+                                        todayAttendance.punch_out_lng) }}
                                 </p>
                                 <p v-if="todayAttendance?.punch_out_ip"><strong>🌐 Out IP:</strong> {{
                                     todayAttendance.punch_out_ip }}</p>
@@ -103,6 +103,14 @@ const safeRoute = (name, params = {}) => {
     return `/${name.replace(/\./g, '-')}`;
 };
 // ----------------------------------------------------------------
+
+// ---------- Safe coordinate formatter ----------
+const formatCoordinate = (lat, lng) => {
+    if (lat === undefined || lat === null || isNaN(parseFloat(lat))) return '—';
+    if (lng === undefined || lng === null || isNaN(parseFloat(lng))) return '—';
+    return `${parseFloat(lat).toFixed(6)}, ${parseFloat(lng).toFixed(6)}`;
+};
+// ------------------------------------------------
 
 // Flash messages
 const flashMessage = computed(() => {
