@@ -55,7 +55,6 @@ const verificationLinkSent = computed(
         </div>
     </GuestLayout>
 </template>
-
 <style scoped>
 /* Dark theme tokens – matches other auth pages */
 .verify-container {
