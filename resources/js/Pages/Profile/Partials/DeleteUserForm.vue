@@ -17,12 +17,12 @@ const form = useForm({
 
 const confirmUserDeletion = () => {
     confirmingUserDeletion.value = true;
-
     nextTick(() => passwordInput.value.focus());
 };
 
 const deleteUser = () => {
-    form.delete(route('profile.destroy'), {
+    // Hardcoded URL – correct endpoint for profile deletion
+    form.delete('/profile', {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => passwordInput.value.focus(),
@@ -32,13 +32,13 @@ const deleteUser = () => {
 
 const closeModal = () => {
     confirmingUserDeletion.value = false;
-
     form.clearErrors();
     form.reset();
 };
 </script>
 
 <template>
+    <!-- The rest of the template remains unchanged -->
     <section class="delete-section">
         <header class="delete-header">
             <h2 class="delete-title">Delete Account</h2>
@@ -58,20 +58,17 @@ const closeModal = () => {
                 <h2 class="modal-title">
                     Are you sure you want to delete your account?
                 </h2>
-
                 <p class="modal-description">
                     Once your account is deleted, all of its resources and data
                     will be permanently deleted. Please enter your password to
                     confirm you would like to permanently delete your account.
                 </p>
-
                 <div class="modal-form-group">
                     <InputLabel for="password" value="Password" class="sr-only" />
                     <TextInput id="password" ref="passwordInput" v-model="form.password" type="password"
                         class="modal-password-input" placeholder="Password" @keyup.enter="deleteUser" />
                     <InputError :message="form.errors.password" class="modal-error" />
                 </div>
-
                 <div class="modal-actions">
                     <SecondaryButton @click="closeModal" class="modal-btn modal-btn--cancel">
                         Cancel
@@ -85,6 +82,7 @@ const closeModal = () => {
         </Modal>
     </section>
 </template>
+
 
 <style scoped>
 /* Dark theme tokens – matches parent profile page */

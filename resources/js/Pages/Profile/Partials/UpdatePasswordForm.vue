@@ -16,7 +16,8 @@ const form = useForm({
 });
 
 const updatePassword = () => {
-    form.put(route('password.update'), {
+    // Hardcoded URL – Laravel's password update endpoint
+    form.put('/password', {
         preserveScroll: true,
         onSuccess: () => form.reset(),
         onError: () => {
