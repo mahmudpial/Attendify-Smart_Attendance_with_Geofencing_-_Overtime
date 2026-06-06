@@ -226,7 +226,8 @@ const registerUrl = computed(() => safeRoute('register'));
                 Inertia.js
                 &nbsp;·&nbsp; Supabase &nbsp;·&nbsp; Render
             </span>
-            <span class="footer-copy">Built with ❤️ by Mahmud Pial</span>
+            <span class="footer-copy">Built- by <a href="https://github.com/mahmudpial" target="_blank">Pial
+                    Mahmud</a></span>
         </footer>
 
     </div>
