@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\LeaveRequest;
-use App\Helpers\OvertimeHelper;  // ✅ Fixed: correct case
+use App\Helpers\OvertimeHelper;
 use App\Helpers\GeofenceHelper;
 use Inertia\Inertia;
 
@@ -69,7 +69,6 @@ class ReportController extends Controller
             ]
         ]);
     }
-
     public function export(Request $request)
     {
         $attendances = Attendance::with('user')
@@ -80,6 +79,7 @@ class ReportController extends Controller
         $csvFileName = 'attendance_report_' . now()->format('Ymd_His') . '.csv';
         $handle = fopen('php://temp', 'w+');
 
+        // Headers
         fputcsv($handle, [
             'Employee Name',
             'Date',
@@ -92,10 +92,12 @@ class ReportController extends Controller
         ]);
 
         foreach ($attendances as $att) {
-            $normal = $att->normal_hours ?? 0;
-            $overtime = $att->overtime_hours ?? 0;
+            // Use the stored decimal values directly (they are already numbers)
+            $normal = (float) ($att->normal_hours ?? 0);
+            $overtime = (float) ($att->overtime_hours ?? 0);
             $total = $normal + $overtime;
 
+            // If no pre‑calculated hours but punch times exist, compute simple diff
             if ($normal == 0 && $overtime == 0 && $att->punch_in && $att->punch_out) {
                 $total = Carbon::parse($att->punch_in)->diffInHours(Carbon::parse($att->punch_out));
                 $normal = $total;
@@ -122,7 +124,7 @@ class ReportController extends Controller
             ->header('Content-Disposition', "attachment; filename=\"$csvFileName\"");
     }
 
-    // ✅ Fixed: added default date range and validation
+    //added default date range and validation
     public function payrollReport(Request $request)
     {
         $startDate = $request->start_date ? Carbon::parse($request->start_date) : Carbon::now()->startOfMonth();

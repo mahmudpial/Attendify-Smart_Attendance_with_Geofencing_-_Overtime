@@ -166,9 +166,9 @@
                                         <td data-label="Punch In">{{ formatTime(record.punch_in) }}</td>
                                         <td data-label="Punch Out">{{ formatTime(record.punch_out) }}</td>
                                         <td data-label="Normal" class="text-center">{{ formatNumber(record.normal_hours)
-                                        }}</td>
+                                            }}</td>
                                         <td data-label="OT" class="text-center">{{ formatNumber(record.overtime_hours)
-                                        }}</td>
+                                            }}</td>
                                         <td data-label="Total" class="text-center">{{ formatNumber((record.normal_hours
                                             || 0) +
                                             (record.overtime_hours || 0)) }}</td>
@@ -261,10 +261,9 @@ function generateReport() {
     router.get(route('admin.reports'), filters.value, { preserveState: true });
 }
 
-function exportReport() {
-    router.post(route('admin.reports.export'), filters.value, { forceFormData: true });
-}
-
+const exportReport = () => {
+    router.post('/admin/reports/export', filters.value, { forceFormData: true });
+};
 function statusClass(status) {
     const classes = {
         present: 'status-present',
