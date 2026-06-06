@@ -38,49 +38,223 @@ const submit = () => {
 
         <Head title="Log in" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            Forgot your password? No problem. Just let us know your email address and we will email you a password reset
-            link that will allow you to choose a new one.
-        </div>
-
-        <form @submit.prevent="submit">
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input id="email" type="email"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    v-model="form.email" required autofocus autocomplete="username" />
-                <div v-if="form.errors.email" class="mt-2 text-sm text-red-600">{{ form.errors.email }}</div>
+        <div class="login-container">
+            <div class="login-header">
+                <h2 class="login-title">Welcome back</h2>
+                <p class="login-subtitle">Sign in to your account</p>
             </div>
 
-            <div class="mt-4">
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input id="password" type="password"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                    v-model="form.password" required autocomplete="current-password" />
-                <div v-if="form.errors.password" class="mt-2 text-sm text-red-600">{{ form.errors.password }}</div>
-            </div>
+            <form @submit.prevent="submit" class="login-form">
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Email address</label>
+                    <input id="email" type="email" class="form-input" v-model="form.email" required autofocus
+                        autocomplete="username" placeholder="you@example.com" />
+                    <div v-if="form.errors.email" class="form-error">{{ form.errors.email }}</div>
+                </div>
 
-            <div class="mt-4 flex items-center justify-between">
-                <label class="flex items-center">
-                    <input type="checkbox" v-model="form.remember"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-                <Link :href="safeRoute('password.request')" class="text-sm text-gray-600 hover:text-gray-900 underline">
-                    Forgot your password?
-                </Link>
-            </div>
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input id="password" type="password" class="form-input" v-model="form.password" required
+                        autocomplete="current-password" placeholder="••••••••" />
+                    <div v-if="form.errors.password" class="form-error">{{ form.errors.password }}</div>
+                </div>
 
-            <div class="mt-6 flex items-center justify-end">
-                <Link :href="safeRoute('register')" class="text-sm text-gray-600 hover:text-gray-900 underline me-4">
-                    Need an account?
-                </Link>
-                <button type="submit"
-                    class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    :disabled="form.processing">
-                    Log in
+                <!-- Remember & Forgot Password -->
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" v-model="form.remember" class="checkbox" />
+                        <span>Remember me</span>
+                    </label>
+                    <Link :href="safeRoute('password.request')" class="forgot-link">
+                        Forgot password?
+                    </Link>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" :disabled="form.processing">
+                    {{ form.processing ? 'Signing in...' : 'Sign in' }}
                 </button>
-            </div>
-        </form>
+
+                <!-- Register Link -->
+                <div class="register-link">
+                    <span>Don't have an account?</span>
+                    <Link :href="safeRoute('register')">Create an account</Link>
+                </div>
+            </form>
+        </div>
     </GuestLayout>
 </template>
+
+<style scoped>
+/* Dark theme tokens – matches the GuestLayout redesign */
+.login-container {
+    --bg-dark: #0a0f1e;
+    --surface: rgba(255, 255, 255, 0.045);
+    --surface-hover: rgba(255, 255, 255, 0.075);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.16);
+    --text: #f0f4ff;
+    --text-muted: #8b97b8;
+    --text-disabled: #545e7a;
+    --primary: #4f8ef7;
+    --primary-dim: rgba(79, 142, 247, 0.15);
+    --danger: #f87171;
+    --success: #34d399;
+    --warning: #fbbf24;
+    --info: #a78bfa;
+    --r: 12px;
+    --font: 'Plus Jakarta Sans', 'DM Sans', system-ui, sans-serif;
+
+    font-family: var(--font);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.login-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+    margin-bottom: 6px;
+}
+
+.login-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+/* Form elements */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.form-input::placeholder {
+    color: var(--text-disabled);
+}
+
+.form-error {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 4px;
+}
+
+/* Remember & Forgot row */
+.form-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 4px 0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+.forgot-link {
+    font-size: 13px;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.forgot-link:hover {
+    color: #3b7ae6;
+}
+
+/* Submit button */
+.submit-btn {
+    width: 100%;
+    background: var(--primary);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #0a0f1e;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background: #3b7ae6;
+    transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Register link */
+.register-link {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.register-link a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 6px;
+    transition: color 0.2s;
+}
+
+.register-link a:hover {
+    color: #3b7ae6;
+}
+</style>
