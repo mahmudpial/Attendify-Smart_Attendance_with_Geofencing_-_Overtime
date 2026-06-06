@@ -1,7 +1,45 @@
 <template>
-    <button
-        class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white transition duration-150 ease-in-out hover:bg-gray-700 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:bg-gray-900"
-    >
+    <button class="primary-btn">
         <slot />
     </button>
 </template>
+
+<style scoped>
+.primary-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #4f8ef7;
+    border: none;
+    color: #0a0f1e;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #3b7ae6;
+    transform: translateY(-1px);
+}
+
+.primary-btn:focus {
+    outline: none;
+    ring: 2px solid #4f8ef7;
+    ring-offset: 2px;
+}
+
+.primary-btn:active {
+    background: #2a6ac8;
+    transform: translateY(0);
+}
+
+.primary-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    transform: none;
+}
+</style>

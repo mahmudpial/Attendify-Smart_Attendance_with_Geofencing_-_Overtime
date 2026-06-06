@@ -18,9 +18,11 @@ defineExpose({ focus: () => input.value.focus() });
 </script>
 
 <template>
-    <input
-        class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        v-model="model"
-        ref="input"
-    />
+    <input class="form-input" v-model="model" ref="input" />
 </template>
+
+<style scoped>
+/* The component does not define any default styles.
+   Instead, parent components style it via CSS variables and :deep(.form-input) rules.
+   This ensures full consistency with the dark theme. */
+</style>

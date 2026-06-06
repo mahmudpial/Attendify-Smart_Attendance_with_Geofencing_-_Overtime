@@ -14,8 +14,8 @@ const props = defineProps({
 
 const classes = computed(() =>
     props.active
-        ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-indigo-400 text-start text-base font-medium text-indigo-700 bg-indigo-50 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 transition duration-150 ease-in-out'
-        : 'block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition duration-150 ease-in-out',
+        ? 'responsive-nav-link active'
+        : 'responsive-nav-link'
 );
 </script>
 
@@ -24,3 +24,39 @@ const classes = computed(() =>
         <slot />
     </Link>
 </template>
+
+<style scoped>
+.responsive-nav-link {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 0.75rem;
+    border-left-width: 4px;
+    border-left-style: solid;
+    border-left-color: transparent;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #8b97b8;
+    background: transparent;
+    transition: all 0.15s ease-in-out;
+}
+
+.responsive-nav-link:hover {
+    color: #f0f4ff;
+    background: rgba(255, 255, 255, 0.05);
+    border-left-color: rgba(255, 255, 255, 0.2);
+}
+
+.responsive-nav-link.active {
+    border-left-color: #4f8ef7;
+    color: #4f8ef7;
+    background: rgba(79, 142, 247, 0.08);
+}
+
+.responsive-nav-link:focus {
+    outline: none;
+    color: #f0f4ff;
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(79, 142, 247, 0.5);
+}
+</style>

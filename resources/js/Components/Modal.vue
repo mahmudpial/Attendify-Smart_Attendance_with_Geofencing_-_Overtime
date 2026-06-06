@@ -75,49 +75,69 @@ const maxWidthClass = computed(() => {
 </script>
 
 <template>
-    <dialog
-        class="z-50 m-0 min-h-full min-w-full overflow-y-auto bg-transparent backdrop:bg-transparent"
-        ref="dialog"
-    >
-        <div
-            class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0"
-            scroll-region
-        >
-            <Transition
-                enter-active-class="ease-out duration-300"
-                enter-from-class="opacity-0"
-                enter-to-class="opacity-100"
-                leave-active-class="ease-in duration-200"
-                leave-from-class="opacity-100"
-                leave-to-class="opacity-0"
-            >
-                <div
-                    v-show="show"
-                    class="fixed inset-0 transform transition-all"
-                    @click="close"
-                >
-                    <div
-                        class="absolute inset-0 bg-gray-500 opacity-75"
-                    />
-                </div>
+    <dialog class="modal-dialog" ref="dialog">
+        <div class="fixed inset-0 z-50 overflow-y-auto px-4 py-6 sm:px-0" scroll-region>
+            <!-- Backdrop overlay -->
+            <Transition enter-active-class="ease-out duration-300" enter-from-class="opacity-0"
+                enter-to-class="opacity-100" leave-active-class="ease-in duration-200" leave-from-class="opacity-100"
+                leave-to-class="opacity-0">
+                <div v-show="show" class="modal-backdrop" @click="close" />
             </Transition>
 
-            <Transition
-                enter-active-class="ease-out duration-300"
+            <!-- Modal panel -->
+            <Transition enter-active-class="ease-out duration-300"
                 enter-from-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enter-to-class="opacity-100 translate-y-0 sm:scale-100"
-                leave-active-class="ease-in duration-200"
+                enter-to-class="opacity-100 translate-y-0 sm:scale-100" leave-active-class="ease-in duration-200"
                 leave-from-class="opacity-100 translate-y-0 sm:scale-100"
-                leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            >
-                <div
-                    v-show="show"
-                    class="mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full"
-                    :class="maxWidthClass"
-                >
+                leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                <div v-show="show" class="modal-panel" :class="maxWidthClass">
                     <slot v-if="showSlot" />
                 </div>
             </Transition>
         </div>
     </dialog>
 </template>
+
+<style scoped>
+/* Dark theme tokens – matches application design */
+.modal-dialog {
+    z-index: 50;
+    margin: 0;
+    min-height: 100%;
+    min-width: 100%;
+    overflow-y: auto;
+    background: transparent;
+}
+
+.modal-dialog::backdrop {
+    background: transparent;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
+
+.modal-panel {
+    margin-bottom: 1.5rem;
+    transform: translateY(0) scale(1);
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 640px) {
+    .modal-panel {
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
+}
+</style>

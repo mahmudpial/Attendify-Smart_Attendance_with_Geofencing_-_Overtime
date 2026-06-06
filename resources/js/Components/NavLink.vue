@@ -13,9 +13,7 @@ const props = defineProps({
 });
 
 const classes = computed(() =>
-    props.active
-        ? 'inline-flex items-center px-1 pt-1 border-b-2 border-indigo-400 text-sm font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out',
+    props.active ? 'nav-link nav-link--active' : 'nav-link'
 );
 </script>
 
@@ -24,3 +22,35 @@ const classes = computed(() =>
         <slot />
     </Link>
 </template>
+
+<style scoped>
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    color: #8b97b8;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #f0f4ff;
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-link--active {
+    color: #4f8ef7;
+    border-bottom-color: #4f8ef7;
+}
+
+.nav-link--active:hover {
+    color: #4f8ef7;
+    border-bottom-color: #4f8ef7;
+}
+</style>

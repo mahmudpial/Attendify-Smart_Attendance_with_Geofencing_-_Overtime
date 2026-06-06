@@ -10,10 +10,26 @@ defineProps({
 </script>
 
 <template>
-    <Link
-        :href="href"
-        class="block w-full px-4 py-2 text-start text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-    >
+    <Link :href="href" class="dropdown-link">
         <slot />
     </Link>
 </template>
+
+<style scoped>
+.dropdown-link {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #8b97b8;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+}
+
+.dropdown-link:hover {
+    background: rgba(255, 255, 255, 0.075);
+    color: #f0f4ff;
+}
+</style>
