@@ -3,7 +3,7 @@ import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
-    base: "./", // Use relative paths
+    base: "/", // Use relative paths
     plugins: [
         laravel({
             input: "resources/js/app.js",
