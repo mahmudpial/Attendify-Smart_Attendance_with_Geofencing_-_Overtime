@@ -5,21 +5,31 @@ import GuestLayout from '@/Layouts/GuestLayout.vue';
 
 // Safe route helper (works without Ziggy)
 const safeRoute = (name, params = {}) => {
-    // Try to use the global route function if available
+    // Hardcoded fallback mapping (highest priority)
+    const fallbackRoutes = {
+        'password.request': '/forgot-password',
+        'register': '/register',
+        'login': '/login',
+        'dashboard': '/dashboard',
+        'password.email': '/forgot-password', // for the email submission
+        'password.update': '/reset-password', // for reset form
+    };
+
+    if (fallbackRoutes[name]) {
+        return fallbackRoutes[name];
+    }
+
+    // Try Ziggy only if no hardcoded fallback
     if (typeof route !== 'undefined' && route) {
         try {
             return route(name, params);
         } catch (e) {
-            // fallback
+            // fall through
         }
     }
-    // Hardcoded fallback for common auth routes
-    const fallbackRoutes = {
-        'password.request': '/forgot-password',
-        'register': '/register',
-        'dashboard': '/dashboard',
-    };
-    return fallbackRoutes[name] || `/${name.replace(/\./g, '-')}`;
+
+    // Ultimate fallback: replace dots with hyphens
+    return `/${name.replace(/\./g, '-')}`;
 };
 
 const form = useForm({
