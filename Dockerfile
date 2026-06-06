@@ -1,6 +1,6 @@
 FROM php:8.3-fpm
 
-# সিস্টেম ডিপেন্ডেন্সি
+# সিস্টেম ডিপেন্ডেন্সি (এখন libpq-dev যোগ করা হয়েছে)
 RUN apt-get update && apt-get install -y \
     nginx \
     git \
@@ -10,10 +10,9 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    supervisor
-
-# PHP এক্সটেনশন (সুপাবেজের জন্য পি‌জিএসকিউএল)
-RUN docker-php-ext-install pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+    supervisor \
+    libpq-dev \
+    && docker-php-ext-install pdo_pgsql mbstring exif pcntl bcmath gd
 
 # কম্পোজার ইন্সটল
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
