@@ -17,7 +17,8 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('password.email'));
+    // Use hardcoded URL – Laravel's default password reset POST endpoint
+    form.post('/forgot-password');
 };
 </script>
 
@@ -34,7 +35,6 @@ const submit = () => {
                 </p>
             </div>
 
-            <!-- Status message (success) -->
             <div v-if="status" class="status-message">
                 {{ status }}
             </div>
@@ -134,26 +134,36 @@ const submit = () => {
     letter-spacing: 0.05em;
 }
 
-/* Override TextInput default styles */
+/* Base input style – forces light text */
 .form-input {
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 12px 14px;
-    color: var(--text);
+    color: var(--text) !important;
     font-size: 14px;
     transition: all 0.2s;
+}
+
+/* Override autofill styles – kills yellow background and forces light text */
+.form-input:-webkit-autofill,
+.form-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.5) inset !important;
+    -webkit-text-fill-color: var(--text) !important;
+    caret-color: var(--text) !important;
+    border-color: var(--border);
+}
+
+.form-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--primary);
     background: rgba(0, 0, 0, 0.5);
-}
-
-.form-input::placeholder {
-    color: var(--text-disabled);
 }
 
 .form-error {
