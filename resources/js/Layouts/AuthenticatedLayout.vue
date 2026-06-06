@@ -7,16 +7,28 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 
+// ---------- EXPLICIT ROUTE MAPPING (hardcoded URLs) ----------
+const routeUrls = {
+    'dashboard': '/dashboard',
+    'profile.edit': '/profile',   // <-- fixed: maps to /profile, not /profile/edit
+    'logout': '/logout',
+};
+
 // Safe route function that never throws
 const safeRoute = (name, params = {}) => {
+    // First check hardcoded mapping
+    if (routeUrls[name]) return routeUrls[name];
+
+    // Then try Ziggy if available
     if (typeof route !== 'undefined') {
         try {
             return route(name, params);
         } catch (e) {
-            return `/${name}`;
+            // fallback
         }
     }
-    return `/${name}`;
+    // Ultimate fallback: replace dots with hyphens
+    return `/${name.replace(/\./g, '-')}`;
 };
 
 // Safe active route checker
@@ -38,7 +50,7 @@ const user = computed(() => page.props.auth?.user || null);
 const userName = computed(() => user.value?.name || 'Guest');
 const userEmail = computed(() => user.value?.email || '');
 
-// Pre‑computed URLs
+// Pre‑computed URLs using safeRoute
 const dashboardUrl = safeRoute('dashboard');
 const profileUrl = safeRoute('profile.edit');
 const logoutUrl = safeRoute('logout');
@@ -49,27 +61,22 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
 
 <template>
     <div class="layout">
-        <!-- Dark background wrapper -->
         <div class="min-h-screen bg-dark">
-            <!-- Glassmorphic navigation bar -->
             <nav class="nav-glass sticky top-0 z-50">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex h-16 justify-between items-center">
-                        <!-- Logo -->
                         <div class="flex shrink-0 items-center">
                             <Link :href="dashboardUrl">
                                 <ApplicationLogo class="block h-9 w-auto fill-current text-primary" />
                             </Link>
                         </div>
 
-                        <!-- Desktop Navigation Links -->
                         <div class="hidden sm:flex sm:items-center sm:space-x-8">
                             <NavLink :href="dashboardUrl" :active="isDashboardActive" class="nav-link">
                                 Dashboard
                             </NavLink>
                         </div>
 
-                        <!-- User Dropdown (Desktop) -->
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <div class="relative ms-3" v-if="user">
                                 <Dropdown align="right" width="48">
@@ -87,13 +94,13 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
                                     <template #content>
                                         <DropdownLink :href="profileUrl" class="dropdown-item">Profile</DropdownLink>
                                         <DropdownLink :href="logoutUrl" method="post" as="button" class="dropdown-item">
-                                            Log Out</DropdownLink>
+                                            Log Out
+                                        </DropdownLink>
                                     </template>
                                 </Dropdown>
                             </div>
                         </div>
 
-                        <!-- Hamburger (Mobile) -->
                         <div class="flex items-center sm:hidden">
                             <button @click="showingNavigationDropdown = !showingNavigationDropdown"
                                 class="hamburger-btn">
@@ -112,7 +119,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
                     </div>
                 </div>
 
-                <!-- Responsive Mobile Menu -->
                 <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                     class="sm:hidden border-t border-border-dark">
                     <div class="pt-2 pb-3 space-y-1">
@@ -121,7 +127,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
                         </ResponsiveNavLink>
                     </div>
 
-                    <!-- User info & links in mobile -->
                     <div class="pt-4 pb-3 border-t border-border-dark" v-if="user">
                         <div class="px-4">
                             <div class="text-base font-medium text-text">{{ userName }}</div>
@@ -129,22 +134,20 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
                         </div>
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="profileUrl" class="mobile-nav-link">Profile</ResponsiveNavLink>
-                            <ResponsiveNavLink :href="logoutUrl" method="post" as="button" class="mobile-nav-link">Log
-                                Out
+                            <ResponsiveNavLink :href="logoutUrl" method="post" as="button" class="mobile-nav-link">
+                                Log Out
                             </ResponsiveNavLink>
                         </div>
                     </div>
                 </div>
             </nav>
 
-            <!-- Page Header (slot) -->
             <header v-if="$slots.header" class="pt-8 pb-4">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
 
-            <!-- Main Content (slot) -->
             <main class="py-8">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <slot />
@@ -155,7 +158,7 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
 </template>
 
 <style scoped>
-/* Design tokens – matches the new dark theme */
+/* Your existing styles – unchanged */
 .layout {
     --bg-dark: #0a0f1e;
     --surface: rgba(255, 255, 255, 0.045);
@@ -172,7 +175,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
     background-color: var(--bg-dark);
 }
 
-/* Glassmorphic navigation */
 .nav-glass {
     background: rgba(10, 15, 30, 0.8);
     backdrop-filter: blur(12px);
@@ -180,7 +182,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
 }
 
 .nav-link {
-    --tw-text-opacity: 1;
     color: var(--text-muted);
     font-weight: 500;
     transition: all 0.2s ease;
@@ -198,7 +199,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
     border-bottom-color: var(--primary);
 }
 
-/* User trigger */
 .user-trigger {
     display: inline-flex;
     align-items: center;
@@ -237,7 +237,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
     transform: translateY(2px);
 }
 
-/* Dropdown items (customize the default Dropdown component) */
 :deep(.dropdown-content) {
     background: var(--surface);
     backdrop-filter: blur(8px);
@@ -259,7 +258,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
     color: var(--text-primary);
 }
 
-/* Hamburger button */
 .hamburger-btn {
     display: inline-flex;
     align-items: center;
@@ -275,7 +273,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
     color: var(--text-primary);
 }
 
-/* Mobile navigation links */
 .mobile-nav-link {
     display: block;
     padding: 0.5rem 1rem;
@@ -290,7 +287,6 @@ const isDashboardActive = computed(() => isActiveRoute('dashboard'));
     color: var(--text-primary);
 }
 
-/* Border utility */
 .border-border-dark {
     border-color: var(--border-dark);
 }
