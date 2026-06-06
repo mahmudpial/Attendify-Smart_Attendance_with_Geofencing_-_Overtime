@@ -1,59 +1,328 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Attendify – Smart Attendance System with Geofencing & Overtime
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel Version](https://img.shields.io/badge/Laravel-13-red.svg)](https://laravel.com)
+[![PHP Version](https://img.shields.io/badge/PHP-8.4-blue.svg)](https://php.net)
+[![Vue Version](https://img.shields.io/badge/Vue-3-green.svg)](https://vuejs.org)
+[![Inertia.js](https://img.shields.io/badge/Inertia.js-2.0-purple.svg)](https://inertiajs.com)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3bce8c.svg)](https://supabase.com)
+[![Render](https://img.shields.io/badge/Render-Deployed-46e3b7.svg)](https://render.com)
 
-## About Laravel
+A complete, production-ready attendance management system built with **Laravel 13**, **Vue 3 (Inertia.js)**, and **Supabase (PostgreSQL)**. Includes role-based access (Admin/Employee), GPS location tracking, IP logging, geofencing, overtime calculation, leave management, reporting, and email notifications.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> 🚀 **Live Demo:** [https://attendify-smart-attendance-with.onrender.com](https://attendify-smart-attendance-with.onrender.com)
+> *(Free tier may spin down after inactivity – use UptimeRobot to keep it awake)*
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Features
 
-## Learning Laravel
+### Core Attendance
+- **Punch In / Out** – GPS coordinates and IP address captured on every punch.
+- **Geofencing** – restrict punching to office premises with a configurable radius.
+- **Overtime Calculation** – automatic based on `WORK_START_TIME` and `WORK_END_TIME`.
+- **Overtime Multipliers** – configurable rates (1.5×, 2.0×) for payroll integration.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### Role-Based Access
+- **Employee** – dashboard, punch in/out, view own attendance history, manage leave requests.
+- **Admin** – manage all attendances, generate reports, manage users, approve/reject leave requests.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Leave Management
+- Employees request **sick / casual / annual** leave.
+- Admin approves or rejects with an optional comment.
+- Leave balance automatically deducted upon approval.
+- Attendance records marked as `on_leave`.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Reporting & Export
+- Filter attendance records by date range with summary cards and detailed breakdowns.
+- One-click **CSV export** of attendance data for payroll processing.
 
-## Agentic Development
+### User Management *(Admin)*
+- Create, edit, and delete users.
+- Assign roles: `admin` or `employee`.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Email Notifications
+- Daily punch reminders to employees.
+- Late / absent alerts sent to admins.
+- Leave request status updates sent to employees.
+
+> Uses Laravel Mail with the `log` driver by default. Switch to SMTP for real email delivery.
+
+### Security & Logging
+- GPS coordinates and IP address recorded for every punch event.
+- Optional geofencing validation on the backend.
+- CSRF protection, XSS prevention, and role-based middleware.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer          | Technology                              |
+|----------------|-----------------------------------------|
+| Backend        | Laravel 13 (PHP 8.4)                    |
+| Frontend       | Vue 3 + Inertia.js + Tailwind CSS       |
+| Database       | Supabase (PostgreSQL)                   |
+| Build Tool     | Vite                                    |
+| Authentication | Laravel Breeze (Vue / Inertia)          |
+| Routing        | Ziggy + Inertia                         |
+| Hosting        | Render (Free tier)                      |
+| Notifications  | Laravel Mail + Database                 |
+| Overtime Logic | Custom helper (`OvertimeHelper`)        |
+| Geolocation    | Browser Geolocation API + backend validation |
+
+---
+
+## 📦 Installation & Local Development
+
+### Prerequisites
+
+- PHP `^8.4`
+- Composer
+- Node.js `^20` & NPM
+- Supabase account (or any PostgreSQL database)
+
+### Steps
+
+**1. Clone the repository**
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/mahmudpial/Attendify-Smart_Attendance_with_Geofencing_-_Overtime.git
+cd Attendify-Smart_Attendance_with_Geofencing_-_Overtime
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+**2. Install PHP dependencies**
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**3. Copy the environment file**
 
-## Code of Conduct
+```bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**4. Set up your database (Supabase)**
 
-## Security Vulnerabilities
+Create a Supabase project, copy the session pooler connection string, then update `.env`:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```env
+DB_CONNECTION=pgsql
+DB_HOST=your-supabase-host
+DB_PORT=5432
+DB_DATABASE=postgres
+DB_USERNAME=postgres.your-project-ref
+DB_PASSWORD=your-password
+DB_SSLMODE=prefer
+DB_SCHEMA=laravel   # optional
+```
 
-## License
+**5. Generate application key**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# Attendify-Smart_Attendance_with_Geofencing_-_Overtime
+```bash
+php artisan key:generate
+```
+
+**6. Run migrations**
+
+```bash
+php artisan migrate
+```
+
+**7. Install NPM dependencies & build frontend**
+
+```bash
+npm install
+npm run build   # or: npm run dev
+```
+
+**8. Start the development server**
+
+```bash
+php artisan serve
+```
+
+Access the app at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+---
+
+## 🌐 Deployment Guide (Render + Supabase)
+
+### 1. Prepare Your Repository
+
+Push your code to GitHub. Ensure the following files exist at the project root:
+
+- `Dockerfile` – PHP 8.4 with Nginx & PHP-FPM
+- `start.sh` – runs migrations before starting Supervisor
+- `.docker/nginx.conf`
+- `.docker/supervisord.conf`
+
+### 2. Create a Web Service on Render
+
+1. Log in to [Render](https://render.com).
+2. Click **New +** → **Web Service**.
+3. Connect your GitHub repository.
+4. Select **Docker** environment.
+5. Set Instance Type to **Free**.
+6. Add environment variables (see below).
+
+### 3. Environment Variables
+
+| Variable           | Value                                         |
+|--------------------|-----------------------------------------------|
+| `APP_ENV`          | `production`                                  |
+| `APP_DEBUG`        | `false`                                       |
+| `APP_KEY`          | Run `php artisan key:generate --show` locally |
+| `APP_URL`          | `https://your-service.onrender.com`           |
+| `DB_CONNECTION`    | `pgsql`                                       |
+| `DB_HOST`          | Supabase host                                 |
+| `DB_PORT`          | `5432`                                        |
+| `DB_DATABASE`      | `postgres`                                    |
+| `DB_USERNAME`      | `postgres.your-project-ref`                   |
+| `DB_PASSWORD`      | Your Supabase password                        |
+| `DB_SSLMODE`       | `prefer`                                      |
+| `SESSION_DRIVER`   | `database`                                    |
+| `CACHE_DRIVER`     | `database`                                    |
+| `LOG_CHANNEL`      | `stderr`                                      |
+
+### 4. Deploy
+
+Click **Deploy Web Service**. Render will build the Docker image, run `composer install` and `npm run build`, then start the container.
+
+### 5. Keep It Awake (Free Tier)
+
+Render free tier spins down after 15 minutes of inactivity. Use [UptimeRobot](https://uptimerobot.com) (free) to ping your URL every 5 minutes:
+
+- Monitor type: **HTTP(s)**
+- Interval: **5 minutes**
+- URL: `https://your-service.onrender.com`
+
+This ensures near-24/7 uptime within the 750 free hours/month.
+
+---
+
+## 🧪 Testing the System
+
+### Employee Flow
+
+1. Register an account (role defaults to `employee`).
+2. Log in to the employee dashboard.
+3. Click **Punch In** – allow geolocation access when prompted.
+4. Click **Punch Out** after work – overtime hours are calculated automatically.
+5. Visit **My Attendance History** to review past punches with location and IP.
+6. Apply for leave under **Manage Leave** and check your leave balance.
+
+### Admin Flow
+
+1. Log in with an admin account (seed or create via `php artisan tinker`).
+2. **Dashboard** – view recent attendance activity.
+3. **Manage Attendances** – filter by user or date, view all records.
+4. **Reports** – select a date range, view summary cards and daily breakdown, export CSV.
+5. **Manage Users** – add, edit, delete users and assign roles.
+6. **Manage Leave Requests** – approve or reject with comments; balances deduct automatically.
+
+---
+
+## 📁 Project Structure
+
+```
+├── app/
+│   ├── Helpers/
+│   │   ├── GeofenceHelper.php
+│   │   └── OvertimeHelper.php
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── AttendanceController.php
+│   │   │   ├── DashboardController.php
+│   │   │   ├── LeaveRequestController.php
+│   │   │   ├── ReportController.php
+│   │   │   └── UserController.php
+│   │   └── Middleware/
+│   │       └── AdminMiddleware.php
+│   └── Models/
+│       ├── User.php
+│       ├── Attendance.php
+│       └── LeaveRequest.php
+├── bootstrap/
+│   └── app.php
+├── config/
+│   ├── overtime.php
+│   └── geofence.php
+├── database/
+│   └── migrations/
+├── resources/
+│   ├── js/
+│   │   ├── Pages/
+│   │   │   ├── Dashboard.vue
+│   │   │   ├── MyAttendance.vue
+│   │   │   ├── Leave/
+│   │   │   │   └── MyLeaveRequests.vue
+│   │   │   └── Admin/
+│   │   │       ├── Dashboard.vue
+│   │   │       ├── Attendances.vue
+│   │   │       ├── Reports.vue
+│   │   │       └── Users.vue
+│   │   └── Layouts/
+│   │       └── AuthenticatedLayout.vue
+│   └── views/
+│       └── app.blade.php
+├── routes/
+│   └── web.php
+├── .docker/
+│   ├── nginx.conf
+│   └── supervisord.conf
+├── Dockerfile
+├── start.sh
+└── vite.config.js
+```
+
+---
+
+## 🔧 Configuration
+
+### Geofencing
+
+```env
+OFFICE_LAT=23.8103
+OFFICE_LNG=90.4125
+GEOFENCE_RADIUS=100   # meters
+```
+
+> If both `OFFICE_LAT` and `OFFICE_LNG` are `0`, geofencing is disabled.
+
+### Overtime
+
+```env
+WORK_START_TIME=09:00
+WORK_END_TIME=18:00
+OVERTIME_MULTIPLIER_1=1.5
+OVERTIME_MULTIPLIER_2=2.0
+OVERTIME_THRESHOLD_HOURS=2
+```
+
+### Mail
+
+```env
+MAIL_MAILER=log   # change to smtp for production
+```
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
+
+---
+
+## 🤝 Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+---
+
+## 📬 Contact
+
+For questions or support, open an issue on GitHub or reach out at [pialmahmud99@gmail.com](mailto:pialmahmud99@gmail.com).
+
+---
+
+*Built with ❤️ using Laravel, Vue, Inertia.js, Supabase and Render.*
