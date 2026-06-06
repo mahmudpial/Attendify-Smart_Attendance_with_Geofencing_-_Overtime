@@ -342,7 +342,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## 📬 Contact
 
-For questions or support, open an issue on GitHub or reach out at [pialmahmud99@gmail.com](mailto:pialmahmud99@gmail.com).
+For questions or support, open an issue on GitHub or reach out at [pialmahmud80@gmail.com](mailto:pialmahmud80@gmail.com).
 
 ---
 
