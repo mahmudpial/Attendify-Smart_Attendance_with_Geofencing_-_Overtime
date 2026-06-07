@@ -25,10 +25,13 @@ window.route = function (name, params = {}) {
     return "/" + name.replace(/\./g, "/");
 };
 
-const appName = import.meta.env.VITE_APP_NAME || "Laravel";
+// Use the same brand name as your APP_NAME or VITE_APP_NAME
+const appName = import.meta.env.VITE_APP_NAME || "Attendify – Pial Mahmud";
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    // If a page-specific title is provided (e.g., "Dashboard"), format as "Dashboard | Attendify – Pial Mahmud"
+    // If no page title, just show the brand name.
+    title: (title) => (title ? `${title} | ${appName}` : appName),
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.vue`,

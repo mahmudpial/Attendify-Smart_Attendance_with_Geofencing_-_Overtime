@@ -4,10 +4,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title inertia>Attendify – Pial Mahmud</title>
+    <!-- Empty inertia title – Inertia will set the correct title from app.js -->
+    <title inertia></title>
+
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
     @routes
     @vite('resources/js/app.js')
     @inertiaHead
