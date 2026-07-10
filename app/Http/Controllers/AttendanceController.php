@@ -17,15 +17,17 @@ class AttendanceController extends Controller
         $user = auth()->user();
         $today = now()->toDateString();
 
+        $geofencingOn = config('geofence.enabled');
+
         $request->validate([
-            'latitude' => 'nullable|numeric|between:-90,90',
-            'longitude' => 'nullable|numeric|between:-180,180',
+            'latitude' => ($geofencingOn ? 'required' : 'nullable') . '|numeric|between:-90,90',
+            'longitude' => ($geofencingOn ? 'required' : 'nullable') . '|numeric|between:-180,180',
         ]);
 
         $latitude = $request->latitude;
         $longitude = $request->longitude;
 
-        if ($latitude && $longitude && !GeofenceHelper::isWithinGeofence($latitude, $longitude)) {
+        if ($geofencingOn && !GeofenceHelper::isWithinGeofence($latitude, $longitude)) {
             return back()->with('error', 'You are outside the office premises. Punch-in not allowed.');
         }
 
@@ -57,15 +59,17 @@ class AttendanceController extends Controller
         $user = auth()->user();
         $today = now()->toDateString();
 
+        $geofencingOn = config('geofence.enabled');
+
         $request->validate([
-            'latitude' => 'nullable|numeric|between:-90,90',
-            'longitude' => 'nullable|numeric|between:-180,180',
+            'latitude' => ($geofencingOn ? 'required' : 'nullable') . '|numeric|between:-90,90',
+            'longitude' => ($geofencingOn ? 'required' : 'nullable') . '|numeric|between:-180,180',
         ]);
 
         $latitude = $request->latitude;
         $longitude = $request->longitude;
 
-        if ($latitude && $longitude && !GeofenceHelper::isWithinGeofence($latitude, $longitude)) {
+        if ($geofencingOn && !GeofenceHelper::isWithinGeofence($latitude, $longitude)) {
             return back()->with('error', 'You are outside the office premises. Punch-out not allowed.');
         }
 

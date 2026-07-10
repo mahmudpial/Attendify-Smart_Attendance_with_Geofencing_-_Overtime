@@ -26,13 +26,19 @@ class GeofenceHelper
      */
     public static function isWithinGeofence($lat, $lng)
     {
+        // Geofencing is opt-in. If it's not explicitly enabled, don't enforce it.
+        if (!config('geofence.enabled')) {
+            return true;
+        }
+
         $officeLat = config('geofence.office_lat');
         $officeLng = config('geofence.office_lng');
         $radius = config('geofence.radius_meters');
 
-        if (!$officeLat || !$officeLng) {
-            // Geofencing disabled if no office coordinates set
-            return true;
+        // Fail closed: geofencing is turned on but office coordinates are missing.
+        // This is a misconfiguration, not a reason to silently let everyone through.
+        if ($officeLat === null || $officeLng === null) {
+            return false;
         }
 
         $distance = self::distance($lat, $lng, $officeLat, $officeLng);
